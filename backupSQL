@@ -1,0 +1,20 @@
+#!/bin/bash
+
+## set up the backup date
+BACKUP_DATE="date +%F"
+BACKUP_DATE=$(eval "$BACKUP_DATE")
+BACKUP_DIR=/home/leet/sql-wordpress
+BACKUP_HISTORY=5
+echo "$BACKUP_DATE"
+PASSWORD="TACOBELLBABAIESSSSSSSSSSSSS"
+
+#mysql and wordpress backup
+mysqldump -u leet -p$PASSWORD wordpress > "$BACKUP_DIR/DUMP$BACKUP_DATE.sql"
+cp -R /var/www/wordpress "$BACKUP_DIR/wordpress$BACKUP_DATE"
+chown -R leet:leet $BACKUP_DIR
+chmod -R 700 $BACKUP_DIR
+
+#clear out old stuff and keep 4 most new files
+cd $BACKUP_DIR
+
+ls -t | tail -n +$BACKUP_HISTORY | xargs rm -R --
