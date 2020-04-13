@@ -1,0 +1,48 @@
+#sudo passwd root
+#Enter cisco password
+#change root password
+
+#su to root
+
+put the fllowing into a bash script and run it as root
+
+
+
+
+
+#! /bin/bash
+ufw enable
+ufw allow 1812
+sleep 3
+ip route del default
+ip route add default via 192.168.1.1
+
+echo 'nameserver 8.8.8.8' >> /etc/resolv.conf
+sleep 3
+apt-get update
+sleep 3
+apt-get -y install freeradius & sleep 60
+sleep 3
+function ipad
+{
+ifconfig eth2 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1
+}
+
+export inet=$(ipad)
+
+printf 'client local_net {\nsecret = password\nipaddr = %s\nnetmask = 24\nrequire_message_authenticator = no\nnastype = "other"\n}' "$inet" >> /etc/freeradius/clients.conf
+
+
+echo 'joey Cleartext-Password := "hello"' >> /etc/freeradius/users
+
+service freeradius restart
+
+radtest joey hello ${inet} 0 password
+
+
+#radius user = joey
+#radius user passwrod = hello
+#server ip address = 192.168.1.23
+#radius secret = password
+
+
