@@ -20,8 +20,6 @@ su -s /bin/bash www-data
 
 wp plugin install --path='/var/www/html/' --activate remove-xmlrpc-pingback-ping
 
-wp plugin install --path='/var/www/html/' --activate miniorange-2-factor-authentication
-
 wp plugin install --path='/var/www/html/' --activate  wordfence
 
 wp plugin install --path='/var/www/html/' --activate  wp-mail-smtp
@@ -31,7 +29,7 @@ wp plugin install --path='/var/www/html/' --activate  wp-mail-smtp
 
 exit
 
-## STOP HERE and Configure Your 2 FA app and your Word Fence app and email app
+## STOP HERE and Configure Your 2 FA app on wordfence and your Word Fence app and email app and block xmlrpc logins on word fence
 
 ##Congiure your whole site, DONT CONTINUE until you finalize your entire sites apearence.
 ## after the below is applied you can no longer edit php
