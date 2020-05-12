@@ -1,0 +1,79 @@
+apt-get update
+apt-get upgrade
+apt-get install -y ufw
+ufw allow 22
+ufw allow 443
+ufw allow 80
+
+#Run Certbot After you set up your LAMP Sever
+#But before you install wordpress
+
+
+#Install WP-cli after wordpress install
+cd ~
+curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+chmod +x wp-cli.phar
+mv wp-cli.phar /usr/local/bin/wp
+
+## to use the wp command you have to su to your web data folders user. ** www-data is this example
+su -s /bin/bash www-data
+
+wp plugin install --path='/var/www/html/' --activate remove-xmlrpc-pingback-ping
+
+wp plugin install --path='/var/www/html/' --activate miniorange-2-factor-authentication
+
+wp plugin install --path='/var/www/html/' --activate  wordfence
+
+wp plugin install --path='/var/www/html/' --activate  wp-mail-smtp
+
+### enter in any app name while logged into the www-data user.
+##Change the --path='/var/www/html/' to where your wordpress is located.
+
+exit
+
+## STOP HERE and Configure Your 2 FA app and your Word Fence app and email app
+
+##Congiure your whole site, DONT CONTINUE until you finalize your entire sites apearence.
+## after the below is applied you can no longer edit php
+
+
+echo '
+define('DISALLOW_FILE_EDIT', true);' >> /var/www/html/wp-config.php
+
+
+## Below enter in your domain and add (www)?.   (!^http(s)?://(www)?.website.com)if you use it
+echo '
+RewriteEngine on
+RewriteCond %{HTTP_REFERER} !^$
+RewriteCond %{HTTP_REFERER} !^http(s)?://website.com [NC]
+RewriteRule .(jpg|jpeg|png|gif)$ - [NC,F,L]' >> /var/www/html/.htaccess
+
+
+echo '
+LoadModule rewrite_module modules/mod_rewrite.so
+LoadModule headers_module modules/mod_headers.so
+ServerSignature Off
+ServerTokens Prod
+Header always append X-Frame-Options SAMEORIGIN
+Header set X-XSS-Protection "1; mode=block"
+Header always set X-Content-Type-Options nosniff
+Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains; preload"
+Header set Content-Security-Policy "base-uri 'self';object-src 'self';script-src 'self'; img-src 'self';frame-src 'self'; form-action 'self'; default-src 'self'"' >> /etc/apache2/apache2.conf
+
+##### Append "Options -Indexes"  to what ever your Directory ##statment it (/var/www) (/var/www/wordpress)
+##if your using the default /var/www/ you can use the script below
+sed -i 's/Options Indexes FollowSymLinks/Options -Indexes +FollowSymLinks/g' /etc/apache2/apache2.conf
+
+
+
+## Add the following to your Theme functions.php file
+
+##function wp_version_remove_version() {
+##return '';
+##}
+##add_filter('the_generator', 'wp_version_remove_version');
+
+##Instal Wordpress Backup.cron from this github
+##create quicklogin.cnf in your home directory 
+## Edit the .cron file to fit your needs and update the dir for the ##backups.
+##recomended you backup to storage off this server
