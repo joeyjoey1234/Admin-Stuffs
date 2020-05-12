@@ -1,4 +1,9 @@
-0 1 * * * /usr/bin/mysqldump --defaults-extra-file=/home/ubuntu/.quicklogin.cnf -u root --single-transaction --quick --lock-tables=false --all-databases > /home/ubuntu/full-backup-$(date +\%F).sql
-0 1 * * * /bin/tar -czvf /home/ubuntu/html-backup-$(date +\%F).tar.gz /var/www/html
-0 1 * * * su -c "/usr/local/bin/wp plugin update --path='/var/www/html/' --all" -s /bin/bash www-data
-0 1 * * * su -c "/usr/local/bin/wp core update --path='/var/www/html/' " -s /bin/bash www-data
+### .quicklogin.cnf is were the creds are stores adjust this to your needs
+#template for .quicklogin.cnf is below 
+#[client]
+#password=TacoBellBabies
+
+0 2 * * * /usr/bin/mysqldump --defaults-extra-file=/root/.quicklogin.cnf -u root --single-transaction --quick --lock-tables=false --all-databases > /root/full-backup-$(date +\%F).sql
+0 2 * * * /bin/tar -czvf /root/html-backup-$(date +\%F).tar.gz /var/www/html
+0 2 * * * su -c "/usr/local/bin/wp plugin update --path='/var/www/html/' --all" -s /bin/bash www-data
+0 2 * * * su -c "/usr/local/bin/wp core update --path='/var/www/html/' " -s /bin/bash www-data
