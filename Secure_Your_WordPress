@@ -56,7 +56,9 @@ Header always append X-Frame-Options SAMEORIGIN
 Header set X-XSS-Protection "1; mode=block"
 Header always set X-Content-Type-Options nosniff
 Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains; preload"
-Header set Content-Security-Policy "base-uri 'self';object-src 'self';script-src 'self'; img-src 'self';frame-src 'self'; form-action 'self'; default-src 'self'"' >> /etc/apache2/apache2.conf
+Header set Content-Security-Policy "default-src 'self' data: blob:" ' >> /etc/apache2/apache2.conf
+
+###Edit the Content-Security-Policy to fit your needs
 
 ##### Append "Options -Indexes"  to what ever your Directory ##statment it (/var/www) (/var/www/wordpress)
 ##if your using the default /var/www/ you can use the script below
